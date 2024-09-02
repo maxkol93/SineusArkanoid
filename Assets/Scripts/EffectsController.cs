@@ -19,4 +19,9 @@ public class EffectsController : MonoBehaviour
         scoreEffect.GetComponentInChildren<TMP_Text>().text = $"+{e.Value}";
         Instantiate(destroyEffectPrefab, e.Position, Quaternion.identity);
     }
+
+    private void OnDestroy()
+    {
+        GlobalEvents.ScoreAdded -= GlobalEvents_ScoreAdded;
+    }
 }

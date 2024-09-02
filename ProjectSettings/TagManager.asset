@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Brick
   - OutTrigger
+  - Ball
+  - Bonus
   layers:
   - Default
   - TransparentFX

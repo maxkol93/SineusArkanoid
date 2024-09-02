@@ -26,4 +26,10 @@ public class UIController : MonoBehaviour
         _score += e.Value;
         scoreLabel.text = _score.ToString();
     }
+
+    private void OnDestroy()
+    {
+        GlobalEvents.ScoreAdded -= GlobalEvents_ScoreAdded;
+        GlobalEvents.BallsLeftChanged -= GlobalEvents_BallsLeftChanged;
+    }
 }

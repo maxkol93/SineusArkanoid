@@ -30,12 +30,14 @@ public class BallController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        var obj = collision.gameObject.GetComponent<IDamageble>();
+        if (obj != null) obj.TakeDamage();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
         var obj = collision.gameObject;
-        if (obj.tag == "Brick")
-        {
-            obj.GetComponent<Brick>().TakeDamage();
-        }
-        else if (obj.tag == "OutTrigger")
+        if (obj.tag == "OutTrigger")
         {
             ballsLeft--;
             if (ballsLeft == 0)
