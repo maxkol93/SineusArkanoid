@@ -6,7 +6,7 @@ public class BonusController : MonoBehaviour
 {
     [SerializeField] private List<GameObject> bonusPrefabs;
     [SerializeField] private CarriageController carriage;
-    [SerializeField] private BallController mainBall;
+    [SerializeField] private Ball mainBall;
     [SerializeField] private GameObject bottomWall;
 
     private void Start()
@@ -23,6 +23,10 @@ public class BonusController : MonoBehaviour
         else if (bonusType == BonusType.InceraseBallSpeed)
         {
             carriage.ChangeForce(20, 10);
+        }
+        else if (bonusType == BonusType.Magnet)
+        {
+            carriage.MagnetBonusApply();
         }
     }
 

@@ -5,5 +5,6 @@ using UnityEngine;
 public enum BonusType
 {
     BottomWall,
-    InceraseBallSpeed
+    InceraseBallSpeed,
+    Magnet
 }

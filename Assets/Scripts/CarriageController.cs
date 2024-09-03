@@ -9,6 +9,7 @@ public class CarriageController : MonoBehaviour
 
     private float _startForce = 10;
     private float _force = 10;
+    private bool _magnetEnable;
 
     private void Update()
     {
@@ -32,14 +33,25 @@ public class CarriageController : MonoBehaviour
         forceUpSprite.enabled = false;
     }
 
+    public void MagnetBonusApply()
+    {
+        _magnetEnable = true;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         var obj = collision.gameObject;
         if (obj.tag == "Ball")
         {
-            var rb = obj.GetComponent<Rigidbody2D>();
-            rb.velocity = Vector2.zero;
-            rb.AddForce((obj.transform.position - forcePivot.position).normalized * _force, ForceMode2D.Impulse);
+            var ball = obj.GetComponent<Ball>();
+            if (_magnetEnable)
+            {
+                ball.PlaceOnCarriage();
+            }
+            else
+            {
+                ball.Bounce(_force);
+            }
         }
         else if (obj.tag == "Bonus")
         {
