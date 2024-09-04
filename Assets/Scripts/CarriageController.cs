@@ -18,7 +18,8 @@ public class CarriageController : MonoBehaviour
 
     private void GlobalEvents_UpdateNormalTime(object sender, System.EventArgs e)
     {
-        var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var pos = Camera.main.ScreenToWorldPoint(GameInputController.ScreenMousePos);
         pos.y = transform.position.y;
         pos.z = transform.position.z;
         transform.position = pos;
