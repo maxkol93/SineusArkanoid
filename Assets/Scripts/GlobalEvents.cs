@@ -24,6 +24,13 @@ public class GlobalEvents
     {
         GameOver?.Invoke(null, EventArgs.Empty);
     }
+
+    public static event EventHandler UpdateNormalTime;
+    public static void OnUpdateNormalTime()
+    {
+        UpdateNormalTime?.Invoke(null, EventArgs.Empty);
+    }
+
 }
 
 public class ScoreAddedEventArgs : EventArgs

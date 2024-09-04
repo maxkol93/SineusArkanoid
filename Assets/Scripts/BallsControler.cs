@@ -31,8 +31,9 @@ public class BallsControler : MonoBehaviour
     {
         if (_balls.Count > 1)
         {
+            Debug.Log($"Ball destroy, balls count = {_balls.Count}");
             _balls.Remove(ball);
-            Destroy(ball);
+            Destroy(ball.gameObject);
             return;
         }
 

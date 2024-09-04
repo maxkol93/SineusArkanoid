@@ -20,9 +20,10 @@ public class Ball : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _ballPivotY = transform.position.y;
         //PlaceOnCarriage();
+        GlobalEvents.UpdateNormalTime += GlobalEvents_UpdateNormalTime;
     }
 
-    void Update()
+    private void GlobalEvents_UpdateNormalTime(object sender, System.EventArgs e)
     {
         if (!_isFlight && Input.GetKey(KeyCode.Mouse0))
         {
@@ -30,6 +31,16 @@ public class Ball : MonoBehaviour
             transform.SetParent(null);
             Bounce(10);
         }
+    }
+
+    void Update()
+    {
+        //if (!_isFlight && Input.GetKey(KeyCode.Mouse0))
+        //{
+        //    _isFlight = true;
+        //    transform.SetParent(null);
+        //    Bounce(10);
+        //}
     }
 
     public void PlaceOnCarriage(Transform carriage)
@@ -60,5 +71,10 @@ public class Ball : MonoBehaviour
         {
             ballsControler.BallOutside(this);
         }
+    }
+
+    private void OnDestroy()
+    {
+        GlobalEvents.UpdateNormalTime -= GlobalEvents_UpdateNormalTime;
     }
 }

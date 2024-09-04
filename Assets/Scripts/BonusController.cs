@@ -8,7 +8,7 @@ public class BonusController : MonoBehaviour
     [SerializeField] private CarriageController carriage;
     [SerializeField] private BallsControler ballsControler;
     //[SerializeField] private Ball mainBall;
-    [SerializeField] private GameObject bottomWall;
+    [SerializeField] private GameObject bottomWalls;
 
     private void Start()
     {
@@ -19,7 +19,14 @@ public class BonusController : MonoBehaviour
     {
         if (bonusType == BonusType.BottomWall)
         {
-            bottomWall.SetActive(true);
+            foreach (Transform wall in bottomWalls.transform)
+            {
+                if (!wall.gameObject.activeInHierarchy)
+                {
+                    wall.gameObject.SetActive(true);
+                    break;
+                }
+            }
         }
         else if (bonusType == BonusType.InceraseBallSpeed)
         {
@@ -37,7 +44,7 @@ public class BonusController : MonoBehaviour
 
     private void GlobalEvents_ScoreAdded(object sender, ScoreAddedEventArgs e)
     {
-        if (Random.Range(0, 5) == 0)
+        if (Random.Range(0, 3) == 0)
         {
             var bonus = Instantiate(bonusPrefabs[Random.Range(0, bonusPrefabs.Count)], e.Position, Quaternion.identity);
             bonus.GetComponent<Bonus>().controller = this;
