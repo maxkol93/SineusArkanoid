@@ -6,7 +6,8 @@ public class BonusController : MonoBehaviour
 {
     [SerializeField] private List<GameObject> bonusPrefabs;
     [SerializeField] private CarriageController carriage;
-    [SerializeField] private Ball mainBall;
+    [SerializeField] private BallsControler ballsControler;
+    //[SerializeField] private Ball mainBall;
     [SerializeField] private GameObject bottomWall;
 
     private void Start()
@@ -27,6 +28,10 @@ public class BonusController : MonoBehaviour
         else if (bonusType == BonusType.Magnet)
         {
             carriage.MagnetBonusApply();
+        }
+        else if (bonusType == BonusType.AddBall)
+        {
+            ballsControler.AddBall();
         }
     }
 

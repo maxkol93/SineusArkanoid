@@ -46,7 +46,7 @@ public class CarriageController : MonoBehaviour
             var ball = obj.GetComponent<Ball>();
             if (_magnetEnable)
             {
-                ball.PlaceOnCarriage();
+                ball.PlaceOnCarriage(transform);
             }
             else
             {

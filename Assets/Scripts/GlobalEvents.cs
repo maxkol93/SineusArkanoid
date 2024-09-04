@@ -13,7 +13,7 @@ public class GlobalEvents
     }
 
     public static event EventHandler<BallsLeftChangedEventArgs> BallsLeftChanged;
-    public static void BallsLeft(int count)
+    public static void AttemptsLeft(int count)
     {
         BallsLeftChanged?.Invoke(null, new BallsLeftChangedEventArgs() { Count = count});
     }
