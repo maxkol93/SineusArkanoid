@@ -5,37 +5,68 @@ using UnityEngine;
 public class CarriageController : MonoBehaviour
 {
     [SerializeField] private Transform forcePivot;
-    [SerializeField] private SpriteRenderer forceUpSprite;
+    [SerializeField] private Transform ballPivot;
+    [SerializeField] private GameObject magnetBonusGraphic;
 
-    private float _startForce = 10;
-    private float _force = 10;
     private bool _magnetEnable;
 
-    private void Update()
+    private void Start()
     {
-        var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        GlobalEvents.UpdateNormalTime += GlobalEvents_UpdateNormalTime;
+    }
+
+    private void OnEnable()
+    {
+        _magnetEnable = false;
+        magnetBonusGraphic.SetActive(false);
+    }
+
+    private void GlobalEvents_UpdateNormalTime(object sender, System.EventArgs e)
+    {
+        //var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var pos = Camera.main.ScreenToWorldPoint(GameInputController.ScreenMousePos);
         pos.y = transform.position.y;
         pos.z = transform.position.z;
         transform.position = pos;
     }
 
-    public void ChangeForce(float force, float duration)
+    private void Update()
     {
-        forceUpSprite.enabled = true;
-        _force = force;
-        StartCoroutine(BoostForce(duration));
+        //var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //pos.y = transform.position.y;
+        //pos.z = transform.position.z;
+        //transform.position = pos;
     }
 
-    private IEnumerator BoostForce(float duration)
+    //public void ChangeForce(float force, float duration)
+    //{
+    //    forceUpSprite.enabled = true;
+    //    _force = force;
+    //    StartCoroutine(BoostForceTimer(duration));
+    //}
+
+    //private IEnumerator BoostForceTimer(float duration)
+    //{
+    //    yield return new WaitForSeconds(duration);
+    //    _force = _startForce;
+    //    forceUpSprite.enabled = false;
+    //}
+
+    public void MagnetBonusApply(float duration = 10)
+    {
+        if (gameObject.activeInHierarchy)
+        {
+            _magnetEnable = true;
+            magnetBonusGraphic.SetActive(true);
+            StartCoroutine(MagnetTimer(duration));
+        }
+    }
+
+    private IEnumerator MagnetTimer(float duration)
     {
         yield return new WaitForSeconds(duration);
-        _force = _startForce;
-        forceUpSprite.enabled = false;
-    }
-
-    public void MagnetBonusApply()
-    {
-        _magnetEnable = true;
+        _magnetEnable = false;
+        magnetBonusGraphic.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -46,11 +77,13 @@ public class CarriageController : MonoBehaviour
             var ball = obj.GetComponent<Ball>();
             if (_magnetEnable)
             {
-                ball.PlaceOnCarriage();
+                ball.ForcePivot = forcePivot;
+                ball.PlaceOnCarriage(transform, ballPivot.position.y);
             }
             else
             {
-                ball.Bounce(_force);
+                ball.ForcePivot = forcePivot;
+                ball.Bounce();
             }
         }
         else if (obj.tag == "Bonus")
@@ -59,5 +92,10 @@ public class CarriageController : MonoBehaviour
             bonus.controller.ApplyBonus(bonus.BonusType);
             Destroy(obj);
         }
+    }
+
+    private void OnDestroy()
+    {
+        GlobalEvents.UpdateNormalTime -= GlobalEvents_UpdateNormalTime;
     }
 }

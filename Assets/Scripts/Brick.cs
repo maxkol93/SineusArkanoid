@@ -6,19 +6,39 @@ using UnityEngine.UI;
 
 public class Brick : MonoBehaviour, IDamageble
 {
+    public bool KinematicEnable { get; private set; } = true;
+
     [SerializeField] private int health;
     [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private List<Sprite> textures;
     [SerializeField] private TMP_Text healthLabel;
     [SerializeField] private Gradient _gradient;
     [SerializeField] private bool givesPoints;
 
+    private LevelController _levelController;
     private int _startHealth;
 
     private void Start()
     {
         healthLabel.text = health.ToString();
-        sprite.color = _gradient.Evaluate(health / 10f);
+        sprite.sprite = textures[Random.Range(0, textures.Count)];
+        sprite.sortingOrder = Random.Range(-10, 0);
+        sprite.color = _gradient.Evaluate(Mathf.Min(1f, health / 6f));
         _startHealth = health;
+        _levelController = FindObjectOfType<LevelController>();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("BricksBottomTrigger"))
+        {
+            KinematicEnable = false;
+            var rb = GetComponent<Rigidbody2D>();
+            //rb.velocity = Vector3.zero;
+            //rb.angularVelocity = 0;
+            //rb.isKinematic = true;
+            rb.bodyType = RigidbodyType2D.Static;
+        }
     }
 
     public void TakeDamage()
@@ -31,7 +51,8 @@ public class Brick : MonoBehaviour, IDamageble
         }
         else
         {
-            if (givesPoints) GlobalEvents.AddScore(transform.position, _startHealth);
+            var isLast = _levelController.BricksCount == 1;
+            if (givesPoints) GlobalEvents.OnBrickDestroy(transform.position, _startHealth, isLast);
             Destroy(gameObject);
         }
     }

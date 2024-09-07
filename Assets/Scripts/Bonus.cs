@@ -9,6 +9,16 @@ public class Bonus : MonoBehaviour
 
     public BonusType BonusType;
 
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        var obj = collision.gameObject;
+        if (obj.tag == "OutTrigger")
+        {
+            Destroy(gameObject);
+        }
+    }
+
     //public void ApplyBonus()
     //{
     //    controller.ApplyBonus(this);

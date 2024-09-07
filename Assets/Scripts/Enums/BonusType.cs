@@ -6,5 +6,7 @@ public enum BonusType
 {
     BottomWall,
     InceraseBallSpeed,
-    Magnet
+    Magnet,
+    AddBall,
+    BricksKinematic
 }
