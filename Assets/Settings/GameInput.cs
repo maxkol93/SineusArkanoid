@@ -37,6 +37,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
+                    ""name"": ""MouseLeftClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""f7fdedb7-920b-4678-bcb5-dbe7a683d979"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Mode1"",
                     ""type"": ""Button"",
                     ""id"": ""63bb9a81-1f73-4622-9a26-5106773e1043"",
@@ -49,6 +58,33 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""name"": ""Mode2"",
                     ""type"": ""Button"",
                     ""id"": ""60e1a618-1d63-4ac7-b3f7-69f5517b70df"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Mode3"",
+                    ""type"": ""Button"",
+                    ""id"": ""f0611c3d-514c-462d-83f8-2a5a1e2cad43"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Mode4"",
+                    ""type"": ""Button"",
+                    ""id"": ""721056f8-8976-4e0a-9d09-f13c94205167"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""3cfddcac-0dff-46d7-9338-7625319d710f"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -88,6 +124,50 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""action"": ""Mode2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f2139d23-8616-408b-9294-9b349c148702"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Mode3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1294d3f-e2e9-431a-9c3e-7680ae5d0cfe"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Mode4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ba2e6f03-ef1b-4c5b-81c0-12da118081be"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MouseLeftClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1ccf097f-3cb5-4dad-bf86-e77b3df101e6"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -103,8 +183,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         // Gameplay
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_MousePosition = m_Gameplay.FindAction("MousePosition", throwIfNotFound: true);
+        m_Gameplay_MouseLeftClick = m_Gameplay.FindAction("MouseLeftClick", throwIfNotFound: true);
         m_Gameplay_Mode1 = m_Gameplay.FindAction("Mode1", throwIfNotFound: true);
         m_Gameplay_Mode2 = m_Gameplay.FindAction("Mode2", throwIfNotFound: true);
+        m_Gameplay_Mode3 = m_Gameplay.FindAction("Mode3", throwIfNotFound: true);
+        m_Gameplay_Mode4 = m_Gameplay.FindAction("Mode4", throwIfNotFound: true);
+        m_Gameplay_Pause = m_Gameplay.FindAction("Pause", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
     }
@@ -169,15 +253,23 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Gameplay;
     private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
     private readonly InputAction m_Gameplay_MousePosition;
+    private readonly InputAction m_Gameplay_MouseLeftClick;
     private readonly InputAction m_Gameplay_Mode1;
     private readonly InputAction m_Gameplay_Mode2;
+    private readonly InputAction m_Gameplay_Mode3;
+    private readonly InputAction m_Gameplay_Mode4;
+    private readonly InputAction m_Gameplay_Pause;
     public struct GameplayActions
     {
         private @GameInput m_Wrapper;
         public GameplayActions(@GameInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @MousePosition => m_Wrapper.m_Gameplay_MousePosition;
+        public InputAction @MouseLeftClick => m_Wrapper.m_Gameplay_MouseLeftClick;
         public InputAction @Mode1 => m_Wrapper.m_Gameplay_Mode1;
         public InputAction @Mode2 => m_Wrapper.m_Gameplay_Mode2;
+        public InputAction @Mode3 => m_Wrapper.m_Gameplay_Mode3;
+        public InputAction @Mode4 => m_Wrapper.m_Gameplay_Mode4;
+        public InputAction @Pause => m_Wrapper.m_Gameplay_Pause;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -190,12 +282,24 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @MousePosition.started += instance.OnMousePosition;
             @MousePosition.performed += instance.OnMousePosition;
             @MousePosition.canceled += instance.OnMousePosition;
+            @MouseLeftClick.started += instance.OnMouseLeftClick;
+            @MouseLeftClick.performed += instance.OnMouseLeftClick;
+            @MouseLeftClick.canceled += instance.OnMouseLeftClick;
             @Mode1.started += instance.OnMode1;
             @Mode1.performed += instance.OnMode1;
             @Mode1.canceled += instance.OnMode1;
             @Mode2.started += instance.OnMode2;
             @Mode2.performed += instance.OnMode2;
             @Mode2.canceled += instance.OnMode2;
+            @Mode3.started += instance.OnMode3;
+            @Mode3.performed += instance.OnMode3;
+            @Mode3.canceled += instance.OnMode3;
+            @Mode4.started += instance.OnMode4;
+            @Mode4.performed += instance.OnMode4;
+            @Mode4.canceled += instance.OnMode4;
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -203,12 +307,24 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @MousePosition.started -= instance.OnMousePosition;
             @MousePosition.performed -= instance.OnMousePosition;
             @MousePosition.canceled -= instance.OnMousePosition;
+            @MouseLeftClick.started -= instance.OnMouseLeftClick;
+            @MouseLeftClick.performed -= instance.OnMouseLeftClick;
+            @MouseLeftClick.canceled -= instance.OnMouseLeftClick;
             @Mode1.started -= instance.OnMode1;
             @Mode1.performed -= instance.OnMode1;
             @Mode1.canceled -= instance.OnMode1;
             @Mode2.started -= instance.OnMode2;
             @Mode2.performed -= instance.OnMode2;
             @Mode2.canceled -= instance.OnMode2;
+            @Mode3.started -= instance.OnMode3;
+            @Mode3.performed -= instance.OnMode3;
+            @Mode3.canceled -= instance.OnMode3;
+            @Mode4.started -= instance.OnMode4;
+            @Mode4.performed -= instance.OnMode4;
+            @Mode4.canceled -= instance.OnMode4;
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -267,8 +383,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     public interface IGameplayActions
     {
         void OnMousePosition(InputAction.CallbackContext context);
+        void OnMouseLeftClick(InputAction.CallbackContext context);
         void OnMode1(InputAction.CallbackContext context);
         void OnMode2(InputAction.CallbackContext context);
+        void OnMode3(InputAction.CallbackContext context);
+        void OnMode4(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

@@ -5,57 +5,92 @@ using UnityEngine.Experimental.GlobalIllumination;
 
 public class Ball : MonoBehaviour
 {
+    [SerializeField] private SpriteRenderer forceUpSprite;
+    [SerializeField] private GameObject trail;
+    [SerializeField] private GameObject trailBoost;
+
     //[SerializeField] private Transform carriage;
-    public Transform forcePivot;
-    public BallsControler ballsControler;
+    public Transform ForcePivot { get; set; }
+    public BallsControler BallsControler {  get; set; }
     //[SerializeField] private Transform ballPivot;
     //[SerializeField] private int ballsLeft = 3;
 
     private Rigidbody2D _rb;
     private bool _isFlight;
     private float _ballPivotY;
+    private float _startForce = 8;
+    private float _force = 8;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
         _ballPivotY = transform.position.y;
-        //PlaceOnCarriage();
+        trailBoost.SetActive(false);
+
         GlobalEvents.UpdateNormalTime += GlobalEvents_UpdateNormalTime;
+        GameInputController.MouseLeftClick += GameInputController_MouseLeftClick;
+    }
+
+    private void GameInputController_MouseLeftClick(object sender, System.EventArgs e)
+    {
+        if (!_isFlight)
+        {
+            _isFlight = true;
+            transform.SetParent(null);
+            Bounce();
+        }
     }
 
     private void GlobalEvents_UpdateNormalTime(object sender, System.EventArgs e)
     {
-        if (!_isFlight && Input.GetKey(KeyCode.Mouse0))
+        if (_isFlight)
         {
-            _isFlight = true;
-            transform.SetParent(null);
-            Bounce(10);
+            var velocity = _rb.velocity;
+            if (Vector2.Angle(velocity, Vector2.left) < 1)
+            {
+                Debug.Log($"velocity angele changed from {_rb.velocity} to {_rb.velocity + Vector2.down}");
+                _rb.velocity += Vector2.down;
+            }
+            if (velocity.sqrMagnitude < _force * _force - 20)
+            {
+                Debug.Log($"velocity changed from {_rb.velocity.magnitude} to {(_rb.velocity.normalized * _force).magnitude}");
+                _rb.velocity = _rb.velocity.normalized * _force;
+            }
         }
     }
 
-    void Update()
-    {
-        //if (!_isFlight && Input.GetKey(KeyCode.Mouse0))
-        //{
-        //    _isFlight = true;
-        //    transform.SetParent(null);
-        //    Bounce(10);
-        //}
-    }
 
-    public void PlaceOnCarriage(Transform carriage)
+    public void PlaceOnCarriage(Transform carriage, float pivotY = 0)
     {
         _rb.velocity = Vector2.zero;
         _isFlight = false;
-        transform.position = new Vector3(transform.position.x, _ballPivotY, transform.position.z);
+        transform.position = new Vector3(transform.position.x, pivotY == 0 ? _ballPivotY : pivotY, transform.position.z);
         transform.SetParent(carriage);
     }
 
-    public void Bounce(float force)
+    public void Bounce()
     {
         if (!_isFlight) return;
         _rb.velocity = Vector2.zero;
-        _rb.AddForce((transform.position - forcePivot.position).normalized * force, ForceMode2D.Impulse);
+        _rb.AddForce((transform.position - ForcePivot.position).normalized * _force, ForceMode2D.Impulse);
+    }
+
+    public void ChangeForce(float force, float duration)
+    {
+        forceUpSprite.enabled = true;
+        trail.SetActive(false);
+        trailBoost.SetActive(true);
+        _force = force;
+        StartCoroutine(BoostForceTimer(duration));
+    }
+
+    private IEnumerator BoostForceTimer(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        _force = _startForce;
+        trail.SetActive(true);
+        trailBoost.SetActive(false);
+        forceUpSprite.enabled = false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -69,12 +104,13 @@ public class Ball : MonoBehaviour
         var obj = collision.gameObject;
         if (obj.tag == "OutTrigger")
         {
-            ballsControler.BallOutside(this);
+            BallsControler.BallOutside(this);
         }
     }
 
     private void OnDestroy()
     {
         GlobalEvents.UpdateNormalTime -= GlobalEvents_UpdateNormalTime;
+        GameInputController.MouseLeftClick -= GameInputController_MouseLeftClick;
     }
 }

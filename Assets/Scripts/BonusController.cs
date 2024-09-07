@@ -5,14 +5,37 @@ using UnityEngine;
 public class BonusController : MonoBehaviour
 {
     [SerializeField] private List<GameObject> bonusPrefabs;
-    [SerializeField] private CarriageController carriage;
+    [SerializeField] private List<CarriageController> carriages;
     [SerializeField] private BallsControler ballsControler;
-    //[SerializeField] private Ball mainBall;
     [SerializeField] private GameObject bottomWalls;
+    [SerializeField] private Transform bricksParent;
+
+    private bool _bricksKinematic = true;
+    private List<GameObject> _instances = new List<GameObject>();
 
     private void Start()
     {
-        GlobalEvents.ScoreAdded += GlobalEvents_ScoreAdded;
+        GlobalEvents.BrickDestroy += GlobalEvents_BrickDestroy;
+        GlobalEvents.GameOver += GlobalEvents_GameOver;
+    }
+
+    private void OnDestroy()
+    {
+        GlobalEvents.BrickDestroy -= GlobalEvents_BrickDestroy;
+        GlobalEvents.GameOver -= GlobalEvents_GameOver;
+        //GlobalEvents.RestartLevel -= GlobalEvents_RestartLevel;
+    }
+
+    private void GlobalEvents_GameOver(object sender, GameOverEventArgs e)
+    {
+        for (int i = _instances.Count - 1; i >= 0; i--)
+        {
+            Destroy(_instances[i]);
+        }
+        _instances.Clear();
+
+        foreach (Transform wall in bottomWalls.transform) wall.gameObject.SetActive(false);
+        ballsControler.ChangeForce(8, 1);
     }
 
     public void ApplyBonus(BonusType bonusType)
@@ -30,29 +53,67 @@ public class BonusController : MonoBehaviour
         }
         else if (bonusType == BonusType.InceraseBallSpeed)
         {
-            carriage.ChangeForce(20, 10);
+            ballsControler.ChangeForce(12, 10);
         }
         else if (bonusType == BonusType.Magnet)
         {
-            carriage.MagnetBonusApply();
+            foreach (var carriage in carriages) carriage.MagnetBonusApply();
         }
         else if (bonusType == BonusType.AddBall)
         {
             ballsControler.AddBall();
         }
+        else if (bonusType == BonusType.BricksKinematic)
+        {
+            BricksKinematicRun();
+        }
     }
 
-    private void GlobalEvents_ScoreAdded(object sender, ScoreAddedEventArgs e)
+    private void GlobalEvents_BrickDestroy(object sender, BrickDestroyEventArgs e)
     {
+        if (e.IsLastBrick) return;
+
         if (Random.Range(0, 3) == 0)
         {
             var bonus = Instantiate(bonusPrefabs[Random.Range(0, bonusPrefabs.Count)], e.Position, Quaternion.identity);
             bonus.GetComponent<Bonus>().controller = this;
+            _instances.Add(bonus);
         }
     }
 
-    private void OnDestroy()
+    private void BricksKinematicRun()
     {
-        GlobalEvents.ScoreAdded -= GlobalEvents_ScoreAdded;
+        _bricksKinematic = false;
+        foreach (Transform brick in bricksParent)
+        {
+            if (brick.GetComponent<Brick>().KinematicEnable)
+            {
+                var rb = brick.GetComponent<Rigidbody2D>();
+                if (rb == null) continue;
+                rb.isKinematic = false;
+            }
+        }
+        StartCoroutine(KinematicTimer());
+    }
+
+    private IEnumerator KinematicTimer()
+    {
+        yield return new WaitForSeconds(5);
+        _bricksKinematic = true;
+        foreach (Transform brick in bricksParent)
+        {
+            var rb = brick.GetComponent<Rigidbody2D>();
+            if (rb == null) continue;
+            //rb.velocity = Vector3.zero;
+            //rb.angularVelocity = 0;
+            //rb.isKinematic = true;
+            rb.bodyType = RigidbodyType2D.Static;
+        }
+
+    }
+
+    public void RestartLevel(Transform bricks)
+    {
+        bricksParent = bricks;
     }
 }

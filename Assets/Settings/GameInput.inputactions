@@ -15,6 +15,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "MouseLeftClick",
+                    "type": "Button",
+                    "id": "f7fdedb7-920b-4678-bcb5-dbe7a683d979",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Mode1",
                     "type": "Button",
                     "id": "63bb9a81-1f73-4622-9a26-5106773e1043",
@@ -27,6 +36,33 @@
                     "name": "Mode2",
                     "type": "Button",
                     "id": "60e1a618-1d63-4ac7-b3f7-69f5517b70df",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Mode3",
+                    "type": "Button",
+                    "id": "f0611c3d-514c-462d-83f8-2a5a1e2cad43",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Mode4",
+                    "type": "Button",
+                    "id": "721056f8-8976-4e0a-9d09-f13c94205167",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "3cfddcac-0dff-46d7-9338-7625319d710f",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -64,6 +100,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "Mode2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f2139d23-8616-408b-9294-9b349c148702",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Mode3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1294d3f-e2e9-431a-9c3e-7680ae5d0cfe",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Mode4",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ba2e6f03-ef1b-4c5b-81c0-12da118081be",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseLeftClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1ccf097f-3cb5-4dad-bf86-e77b3df101e6",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

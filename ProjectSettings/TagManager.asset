@@ -8,6 +8,7 @@ TagManager:
   - OutTrigger
   - Ball
   - Bonus
+  - BricksBottomTrigger
   layers:
   - Default
   - TransparentFX

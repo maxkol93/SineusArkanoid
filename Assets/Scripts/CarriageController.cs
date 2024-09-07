@@ -5,15 +5,20 @@ using UnityEngine;
 public class CarriageController : MonoBehaviour
 {
     [SerializeField] private Transform forcePivot;
-    [SerializeField] private SpriteRenderer forceUpSprite;
+    [SerializeField] private Transform ballPivot;
+    [SerializeField] private GameObject magnetBonusGraphic;
 
-    private float _startForce = 10;
-    private float _force = 10;
     private bool _magnetEnable;
 
     private void Start()
     {
         GlobalEvents.UpdateNormalTime += GlobalEvents_UpdateNormalTime;
+    }
+
+    private void OnEnable()
+    {
+        _magnetEnable = false;
+        magnetBonusGraphic.SetActive(false);
     }
 
     private void GlobalEvents_UpdateNormalTime(object sender, System.EventArgs e)
@@ -33,30 +38,35 @@ public class CarriageController : MonoBehaviour
         //transform.position = pos;
     }
 
-    public void ChangeForce(float force, float duration)
-    {
-        forceUpSprite.enabled = true;
-        _force = force;
-        StartCoroutine(BoostForceTimer(duration));
-    }
+    //public void ChangeForce(float force, float duration)
+    //{
+    //    forceUpSprite.enabled = true;
+    //    _force = force;
+    //    StartCoroutine(BoostForceTimer(duration));
+    //}
 
-    private IEnumerator BoostForceTimer(float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        _force = _startForce;
-        forceUpSprite.enabled = false;
-    }
+    //private IEnumerator BoostForceTimer(float duration)
+    //{
+    //    yield return new WaitForSeconds(duration);
+    //    _force = _startForce;
+    //    forceUpSprite.enabled = false;
+    //}
 
     public void MagnetBonusApply(float duration = 10)
     {
-        _magnetEnable = true;
-        StartCoroutine(MagnetTimer(duration));
+        if (gameObject.activeInHierarchy)
+        {
+            _magnetEnable = true;
+            magnetBonusGraphic.SetActive(true);
+            StartCoroutine(MagnetTimer(duration));
+        }
     }
 
     private IEnumerator MagnetTimer(float duration)
     {
         yield return new WaitForSeconds(duration);
         _magnetEnable = false;
+        magnetBonusGraphic.SetActive(false);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -67,11 +77,13 @@ public class CarriageController : MonoBehaviour
             var ball = obj.GetComponent<Ball>();
             if (_magnetEnable)
             {
-                ball.PlaceOnCarriage(transform);
+                ball.ForcePivot = forcePivot;
+                ball.PlaceOnCarriage(transform, ballPivot.position.y);
             }
             else
             {
-                ball.Bounce(_force);
+                ball.ForcePivot = forcePivot;
+                ball.Bounce();
             }
         }
         else if (obj.tag == "Bonus")
