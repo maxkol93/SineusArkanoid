@@ -23,19 +23,6 @@ public class BonusController : MonoBehaviour
     {
         GlobalEvents.BrickDestroy -= GlobalEvents_BrickDestroy;
         GlobalEvents.GameOver -= GlobalEvents_GameOver;
-        //GlobalEvents.RestartLevel -= GlobalEvents_RestartLevel;
-    }
-
-    private void GlobalEvents_GameOver(object sender, GameOverEventArgs e)
-    {
-        for (int i = _instances.Count - 1; i >= 0; i--)
-        {
-            Destroy(_instances[i]);
-        }
-        _instances.Clear();
-
-        foreach (Transform wall in bottomWalls.transform) wall.gameObject.SetActive(false);
-        ballsControler.ChangeForce(8, 1);
     }
 
     public void ApplyBonus(BonusType bonusType)
@@ -69,6 +56,23 @@ public class BonusController : MonoBehaviour
         }
     }
 
+    public void RestartLevel(Transform bricks)
+    {
+        bricksParent = bricks;
+    }
+
+    private void GlobalEvents_GameOver(object sender, GameOverEventArgs e)
+    {
+        for (int i = _instances.Count - 1; i >= 0; i--)
+        {
+            Destroy(_instances[i]);
+        }
+        _instances.Clear();
+
+        foreach (Transform wall in bottomWalls.transform) wall.gameObject.SetActive(false);
+        ballsControler.ChangeForce(8, 1);
+    }
+
     private void GlobalEvents_BrickDestroy(object sender, BrickDestroyEventArgs e)
     {
         if (e.IsLastBrick) return;
@@ -76,7 +80,7 @@ public class BonusController : MonoBehaviour
         if (Random.Range(0, 3) == 0)
         {
             var bonus = Instantiate(bonusPrefabs[Random.Range(0, bonusPrefabs.Count)], e.Position, Quaternion.identity);
-            bonus.GetComponent<Bonus>().controller = this;
+            bonus.GetComponent<Bonus>().Controller = this;
             _instances.Add(bonus);
         }
     }
@@ -104,16 +108,8 @@ public class BonusController : MonoBehaviour
         {
             var rb = brick.GetComponent<Rigidbody2D>();
             if (rb == null) continue;
-            //rb.velocity = Vector3.zero;
-            //rb.angularVelocity = 0;
-            //rb.isKinematic = true;
             rb.bodyType = RigidbodyType2D.Static;
         }
 
-    }
-
-    public void RestartLevel(Transform bricks)
-    {
-        bricksParent = bricks;
     }
 }

@@ -29,6 +29,12 @@ public class GameInputController : MonoBehaviour
         _gameInput.Gameplay.Mode4.performed += Mode4_performed;
     }
 
+    private void Update()
+    {
+        var vector2 = _gameInput.Gameplay.MousePosition.ReadValue<Vector2>();
+        ScreenMousePos = new Vector3(vector2.x, vector2.y);
+    }
+
     private void Pause_performed(InputAction.CallbackContext obj)
     {
         PausePerfromed?.Invoke(null, EventArgs.Empty);
@@ -57,12 +63,5 @@ public class GameInputController : MonoBehaviour
     private void Mode4_performed(InputAction.CallbackContext obj)
     {
         Mode4Perfomed?.Invoke(null, EventArgs.Empty);
-    }
-
-    private void Update()
-    {
-        //var vector2test = Mouse.current.position.value;
-        var vector2 = _gameInput.Gameplay.MousePosition.ReadValue<Vector2>();
-        ScreenMousePos = new Vector3(vector2.x, vector2.y);
     }
 }
