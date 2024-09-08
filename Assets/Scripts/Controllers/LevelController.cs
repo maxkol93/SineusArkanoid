@@ -22,6 +22,12 @@ public class LevelController : MonoBehaviour
         BricksCount = bricksParent.childCount;
     }
 
+    private void OnDestroy()
+    {
+        GlobalEvents.BrickDestroy -= GlobalEvents_ScoreAdded;
+        GlobalEvents.RestartLevel -= GlobalEvents_RestartLevel;
+    }
+
     private void GlobalEvents_RestartLevel(object sender, ResartLevelEventArgs e)
     {
         Destroy(bricksParent.gameObject);
@@ -39,8 +45,14 @@ public class LevelController : MonoBehaviour
 
     private void GlobalEvents_ScoreAdded(object sender, BrickDestroyEventArgs e)
     {
+        StartCoroutine(WaitForCheck());
+    }
+
+    private IEnumerator WaitForCheck()
+    {
+        yield return new WaitForSeconds(0.1f);
         BricksCount = bricksParent.childCount;
-        if (BricksCount == 1 && _gameOverEnable)
+        if (BricksCount == 0 && _gameOverEnable)
         {
             if (_currentLevelIndex == Levels.Count - 1)
                 GlobalEvents.OnGameOver(true, true);

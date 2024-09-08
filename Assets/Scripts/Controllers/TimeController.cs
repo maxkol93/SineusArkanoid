@@ -7,10 +7,9 @@ using UnityEngine.SocialPlatforms;
 
 public class TimeController : MonoBehaviour
 {
+    private Vector3 _lastMousePosition;
     private bool _pause;
     private bool _slowmoAvailable = false;
-
-    private Vector3 _lastMousePosition;
     private bool _superhotMode = false;
 
     private void Start()
@@ -19,10 +18,45 @@ public class TimeController : MonoBehaviour
         GlobalEvents.GameOver += GlobalEvents_GameOver;
         GlobalEvents.RestartLevel += GlobalEvents_RestartLevel;
         GlobalEvents.SwitchPause += OnSwitchPause;
-        _lastMousePosition = Input.mousePosition;
+        _lastMousePosition = GameInputController.ScreenMousePos;
 
-        //GameInputController.PausePerfromed += OnPause;
         GameInputController.Mode1Perfomed += GameInputController_Mode1Perfomed;
+    }
+
+    private void Update()
+    {
+        if (_pause) return;
+        if (!_superhotMode)
+        {
+            GlobalEvents.OnUpdateNormalTime();
+        }
+        else
+        {
+            var pos = GameInputController.ScreenMousePos;
+            var distance = Vector3.Distance(_lastMousePosition, pos);
+            if (distance > 0.01)
+            {
+                Time.timeScale = 0.5f + 0.5f * Mathf.Min(distance / 7, 50);
+                Time.fixedDeltaTime = Time.timeScale * 0.02f;
+                GlobalEvents.OnUpdateNormalTime();
+            }
+            else
+            {
+                Time.timeScale = 0.03f;
+                Time.fixedDeltaTime = Time.timeScale * 0.02f;
+                GlobalEvents.OnUpdateNormalTime();
+            }
+            _lastMousePosition = pos;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        GlobalEvents.BrickDestroy -= GlobalEvents_ScoreAdded;
+        GlobalEvents.GameOver -= GlobalEvents_GameOver;
+        GlobalEvents.RestartLevel -= GlobalEvents_RestartLevel;
+        GlobalEvents.SwitchPause -= OnSwitchPause;
+        GameInputController.Mode1Perfomed -= GameInputController_Mode1Perfomed;
     }
 
     private void GlobalEvents_GameOver(object sender, GameOverEventArgs e)
@@ -59,33 +93,6 @@ public class TimeController : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (_pause) return;
-        if (!_superhotMode) 
-        {
-            GlobalEvents.OnUpdateNormalTime();
-        }
-        else
-        {
-            var pos = Input.mousePosition;
-            var distance = Vector3.Distance(_lastMousePosition, pos);
-            if (distance > 0.01)
-            {
-                Time.timeScale = 0.5f + 0.5f * Mathf.Min(distance / 7, 50);
-                Time.fixedDeltaTime = Time.timeScale * 0.02f;
-                GlobalEvents.OnUpdateNormalTime();
-            }
-            else
-            {
-                Time.timeScale = 0.03f;
-                Time.fixedDeltaTime = Time.timeScale * 0.02f;
-                GlobalEvents.OnUpdateNormalTime();
-            }
-            _lastMousePosition = pos;
-        }
-    }
-
     private void GlobalEvents_ScoreAdded(object sender, BrickDestroyEventArgs e)
     {
         if (_slowmoAvailable)
@@ -100,21 +107,21 @@ public class TimeController : MonoBehaviour
 
     private IEnumerator StartTimer()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2.5f);
         _slowmoAvailable = true;
     }
 
     private IEnumerator SlowTime()
     {
         var d = 0f;
-        while (d < 0.4f)
+        while (d < 0.45f)
         {
             if (_pause)
             {
                 break;
             }
             d += Time.deltaTime;
-            Time.timeScale = Mathf.Lerp(0.1f, 1f,  d / 0.4f);
+            Time.timeScale = Mathf.Lerp(0.1f, 1f,  d / 0.45f);
             Time.fixedDeltaTime = Time.timeScale * 0.02f;
             yield return null;
         }

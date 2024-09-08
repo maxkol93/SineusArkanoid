@@ -23,26 +23,6 @@ public class BallsControler : MonoBehaviour
         AddBall();
     }
 
-    private void GlobalEvents_GameOver(object sender, GameOverEventArgs e)
-    {
-        for (int i = _balls.Count - 1;  i >= 0; i--)
-        {
-            Destroy(_balls[i].gameObject);
-        }
-        _balls.Clear();
-    }
-
-    private void GlobalEvents_RestartLevel(object sender, System.EventArgs e)
-    {
-        for (int i = _balls.Count - 1; i >= 0; i--)
-        {
-            Destroy(_balls[i].gameObject);
-        }
-        _balls.Clear();
-        _attemptsLeft = attemptsCount;
-        AddBall();
-    }
-
     public void AddBall()
     {
         var ball = Instantiate(ballPrefab, ballPivot.position, Quaternion.identity).GetComponent<Ball>();
@@ -83,5 +63,25 @@ public class BallsControler : MonoBehaviour
         {
             ball.ChangeForce(force, duration);
         }
+    }
+
+    private void GlobalEvents_GameOver(object sender, GameOverEventArgs e)
+    {
+        for (int i = _balls.Count - 1; i >= 0; i--)
+        {
+            Destroy(_balls[i].gameObject);
+        }
+        _balls.Clear();
+    }
+
+    private void GlobalEvents_RestartLevel(object sender, System.EventArgs e)
+    {
+        for (int i = _balls.Count - 1; i >= 0; i--)
+        {
+            Destroy(_balls[i].gameObject);
+        }
+        _balls.Clear();
+        _attemptsLeft = attemptsCount;
+        AddBall();
     }
 }

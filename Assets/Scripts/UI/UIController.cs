@@ -12,6 +12,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private List<Image> hearts;
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private TMP_Text finalMessage;
+    [SerializeField] private TMP_Text levelLabel;
     [SerializeField] private Button retryButton;
     [SerializeField] private Button nextButton;
     [SerializeField] private Button exitButton;
@@ -19,23 +20,36 @@ public class UIController : MonoBehaviour
     private int _score = 0;
     private bool _pause;
     private bool _gameOver = false;
+    private int _levelNumber = 1;
 
     private void Start()
     {
         GlobalEvents.BrickDestroy += GlobalEvents_ScoreAdded;
         GlobalEvents.BallsLeftChanged += GlobalEvents_BallsLeftChanged;
         GlobalEvents.GameOver += GlobalEvents_GameOver;
+
         retryButton.onClick.AddListener(RetryLevel);
         nextButton.onClick.AddListener(NextLevel);
         exitButton.onClick.AddListener(() => Application.Quit());
-
-
 
         GameInputController.PausePerfromed += GameInputController_PausePerfromed;
 
         Cursor.visible = false;
         nextButton.gameObject.SetActive(false);
         gameOverPanel.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        GlobalEvents.BrickDestroy -= GlobalEvents_ScoreAdded;
+        GlobalEvents.BallsLeftChanged -= GlobalEvents_BallsLeftChanged;
+        GlobalEvents.GameOver -= GlobalEvents_GameOver;
+
+        retryButton.onClick.RemoveAllListeners();
+        nextButton.onClick.RemoveAllListeners();
+        exitButton.onClick.RemoveAllListeners();
+
+        GameInputController.PausePerfromed -= GameInputController_PausePerfromed;
     }
 
     private void GameInputController_PausePerfromed(object sender, System.EventArgs e)
@@ -84,6 +98,7 @@ public class UIController : MonoBehaviour
 
     private void NextLevel()
     {
+        levelLabel.text = $"Level {++_levelNumber}";
         GlobalEvents.OnRestartLevel(true);
         StartLevel();
     }
@@ -109,12 +124,5 @@ public class UIController : MonoBehaviour
     {
         _score += e.ScoreValue;
         scoreLabel.text = _score.ToString();
-    }
-
-    private void OnDestroy()
-    {
-        GlobalEvents.BrickDestroy -= GlobalEvents_ScoreAdded;
-        GlobalEvents.BallsLeftChanged -= GlobalEvents_BallsLeftChanged;
-        GlobalEvents.GameOver -= GlobalEvents_GameOver;
     }
 }

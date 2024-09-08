@@ -14,10 +14,10 @@ public class ObjectPool
 
     public GameObject GetObject()
     {
-        if (_objects.TryPop(out GameObject o))
+        if (_objects.TryPop(out GameObject obj))
         {
-            o.SetActive(true);
-            return o;
+            obj.SetActive(true);
+            return obj;
         }
 
         return Object.Instantiate(_prefab);

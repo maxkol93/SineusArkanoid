@@ -19,6 +19,11 @@ public class EffectsController : MonoBehaviour
         _destroyEffectPool = new ObjectPool(destroyEffectPrefab);
     }
 
+    private void OnDestroy()
+    {
+        GlobalEvents.BrickDestroy -= GlobalEvents_BrickDestroy;
+    }
+
     private void GlobalEvents_BrickDestroy(object sender, BrickDestroyEventArgs e)
     {
         if (e.IsLastBrick) return;
@@ -39,10 +44,5 @@ public class EffectsController : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         if (obj) pool.AddObject(obj);
-    }
-
-    private void OnDestroy()
-    {
-        GlobalEvents.BrickDestroy -= GlobalEvents_BrickDestroy;
     }
 }

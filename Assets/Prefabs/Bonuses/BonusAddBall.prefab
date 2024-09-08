@@ -331,5 +331,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1192a101015406142828d67c87b976ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 0}
   BonusType: 3

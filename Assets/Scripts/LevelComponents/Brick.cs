@@ -14,6 +14,8 @@ public class Brick : MonoBehaviour, IDamageble
     [SerializeField] private TMP_Text healthLabel;
     [SerializeField] private Gradient _gradient;
     [SerializeField] private bool givesPoints;
+    [SerializeField] private bool replaceSprite = true;
+    [SerializeField] private AudioSource destroySound;
 
     private LevelController _levelController;
     private int _startHealth;
@@ -21,7 +23,7 @@ public class Brick : MonoBehaviour, IDamageble
     private void Start()
     {
         healthLabel.text = health.ToString();
-        sprite.sprite = textures[Random.Range(0, textures.Count)];
+        if (replaceSprite) sprite.sprite = textures[Random.Range(0, textures.Count)];
         sprite.sortingOrder = Random.Range(-10, 0);
         sprite.color = _gradient.Evaluate(Mathf.Min(1f, health / 6f));
         _startHealth = health;
@@ -34,9 +36,6 @@ public class Brick : MonoBehaviour, IDamageble
         {
             KinematicEnable = false;
             var rb = GetComponent<Rigidbody2D>();
-            //rb.velocity = Vector3.zero;
-            //rb.angularVelocity = 0;
-            //rb.isKinematic = true;
             rb.bodyType = RigidbodyType2D.Static;
         }
     }
@@ -51,6 +50,8 @@ public class Brick : MonoBehaviour, IDamageble
         }
         else
         {
+            destroySound.transform.SetParent(null);
+            destroySound.Play();
             var isLast = _levelController.BricksCount == 1;
             if (givesPoints) GlobalEvents.OnBrickDestroy(transform.position, _startHealth, isLast);
             Destroy(gameObject);
